@@ -1,0 +1,78 @@
+---
+title: "SI_PA1_template_part2.Rmd"
+author: "abhibhaku"
+date: "April 27, 2018"
+output: html_document
+---
+
+TITLE - Basic Inferential Data Analysis Instructions
+
+OVERVIEW - Goal is to analyze the ToothGrowth data in the R datasets package
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Q1 - Load the ToothGrowth data and perform some basic exploratory data analysis
+
+library(datasets)
+library(ggplot2)
+data("ToothGrowth")
+
+str(ToothGrowth) # checking the dataset and class of variables
+unique(ToothGrowth$len) # checking for unique values in variable len
+unique(ToothGrowth$supp) # checking for unique values in variable supp
+unique(ToothGrowth$dose) # checking for unique values in variable dose
+
+# plotting boxplot for the dataset
+
+ggplot(ToothGrowth, aes(x=factor(dose), y=len, fill=factor(dose))) + geom_boxplot()+facet_grid(.~supp) + ggtitle("Analysis of ToothGrowth data")
+
+# Result for Q1 - The plot indicates that high length is associated with high dosage for both OJ & VC
+
+# Q2 - Provide a basic summary of the data
+
+summary(ToothGrowth) # summarizing each variable of the dataset
+
+# Q3 - Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose (Only use the techniques from class, even if there's other approaches worth considering)
+
+# Comparing toothgrowth by supplement using a t-test
+
+# Null Hypothesis - Supplement type has no effect on tooth growth
+
+t.test(len~supp,data = ToothGrowth)
+
+# p-value comes out to be 0.06, which is greater than 0.05 & the confidence interval contains 0 - thus, we can't reject the null hypthesis
+
+# Comparing toothgrowth by dosage using a t-test
+
+# Null Hypothesis - higher dosage level is associated with increased tooth growth
+
+# First subsetiing the data into 3 groups as per the dosage levels
+
+Tg1 <- subset(ToothGrowth,dose %in% c(0.5,1.0))
+Tg2 <- subset(ToothGrowth,dose %in% c(0.5,2.0))
+Tg3 <- subset(ToothGrowth,dose %in% c(1.0,2.0))
+
+# running t-test for dosage 0.5 & 1.0, 0.5 & 2.0 and 1.0 & 2.0
+
+t.test(len~dose,data = Tg1)
+t.test(len~dose,data = Tg2)
+t.test(len~dose,data = Tg3)
+
+# For all 3 cases, p-value < 0.05 and zero doesn't lie in their confidence interval range - thus, we can reject the null hypthesis
+
+# Conclusions - 
+
+# 1) Supplement type has no effect on tooth growth
+# 2) High dosage levels lead to increased tooth growth
+
+# Assumptions - 
+
+# 1) Variables are independent and identically distributed (i.i.d.)
+# 2) Variances of tooth growth are different when using different supplement and dosage
+# 3) Sample dataset is represntative of the population and follows a normal distribution
+
+```
+
+
+
